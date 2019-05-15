@@ -6,6 +6,7 @@ import sys
 import speech_recognition as sr
 
 import pyttsx3
+import requests
 
 engine = pyttsx3.init()
 
@@ -43,11 +44,14 @@ def recognize_speech_from_mic(recognizer, microphone):
 
     return response
 
+
 def actions(word):
     if word == 'goodbye':
         print('Killing process, bye bye!')
         engine.say('Killing process, bye bye!')
         sys.exit()
+    if word == 'post':
+        requests.post("www.google.com", data='')
 
 
 if __name__ == "__main__":
@@ -56,13 +60,14 @@ if __name__ == "__main__":
 
     while True:
         print('Listening ...')
-        guess = recognize_speech_from_mic(recognizer, microphone)
+        command = recognize_speech_from_mic(recognizer, microphone)
 
-        if guess["error"]:
-            print("ERROR: {}".format(guess["error"]))
+        if command["error"]:
+            print("ERROR: {}".format(command["error"]))
 
         try:
-            actions(guess["transcription"])
+            print('-> {0}'.format(command["transcription"]))
+            actions(command["transcription"])
         except sr.UnknownValueError:
             print("Could not understand audio")
             engine.say("Could not understand audio")
